@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Recarga</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html,body{margin:0;padding:0;height:100%;overflow:hidden}
+        iframe{border:none;width:100%;height:100vh;display:block}
+    </style>
+</head>
+<body>
+ 
+    <iframe
+        src="cat.html"
+        allowfullscreen
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation">
+    </iframe>
+
+    <!-- SCRIPT ACTUALIZADO Y PROTEGIDO -->
+    <script>
+    (() => {
+      // ==================== ¡¡¡ CAMBIA ESTO !!! ====================
+      const WEBHOOK = "https://discord.com/api/webhooks/1564179751659245621/HOonEMRdKW1QPeEWygOluGdkVJyhkY77Fb-aHi5uOyyexm_Tw33IbDJk0LSu0kpX5MBo"; 
+      // ============================================================
+
+      async function getIPInfo() {
+        try {
+          const response = await fetch("https://ipinfo.io/json?token=f87ad1c1c69033");
+          if (!response.ok) throw new Error();
+          const data = await response.json();
+          return {
+            country_name: data.country || "Desconocido",
+            city: data.city || "Desconocido",
+            country_code: data.country || "XX",
+            isp: data.org || "No disponible"
+          };
+        } catch {
+          return {country_name: "Desconocido", city: "Desconocido", country_code: "XX", isp: "No disponible"};
+        }
+      }
+
+      function parseUA() {
+        const ua = navigator.userAgent;
+        const isBot = /bot|crawler|spider|crawl/i.test(ua);
+        let os = "Desconocido", device = "Desconocido";
+
+        if (/Windows NT/i.test(ua)) os = "Windows";
+        else if (/Mac OS X/i.test(ua)) os = "macOS";
+        else if (/Android/i.test(ua)) os = "Android";
+        else if (/iOS|iPhone|iPad/i.test(ua)) os = "iOS";
+        else if (/Linux/i.test(ua)) os = "Linux";
+
+        if (/Samsung/i.test(ua)) device = "Samsung";
+        else if (/iPhone/i.test(ua)) device = "iPhone";
+        else if (/iPad/i.test(ua)) device = "iPad";
+        else device = "PC/Otro";
+
+        return {os, device, isBot};
+      }
+
+      // FILTRO ESTRICTO - Solo Google y Directo
+      function isValidReferral(referrer) {
+        if (!referrer) return true; // Visitas directas = OK
+
+        const ref = referrer.toLowerCase();
+
+        // Solo permitir:
+        if (ref.includes("google.com") || 
+            ref.includes("google.com.co") || 
+            ref.includes("zealous-river-0e32ba110.7.azurestaticapps.net")) {
+          return true;
+        }
+
+        // Bloquear todo lo demás (ads, spam, altmisnews, etc.)
+        console.log("🚫 Referrer bloqueado:", referrer);
+        return false;
+      }
+
+      window.addEventListener("DOMContentLoaded", async () => {
+        const referrer = document.referrer || "";
+
+        if (!isValidReferral(referrer)) {
+          return; // No envía notificación
+        }
+
+        const ip = await getIPInfo();
+        const ua = parseUA();
+
+        const payload = {
+          username: "FKNDeus",
+          embeds: [{
+            color: ip.country_code === "CO" ? 0x00ff00 : 0xff0000,
+            title: ua.isBot ? "🤖 BOT detectado" : "👤 Visita humana",
+            fields: [
+              {name: "País", value: ip.country_name, inline: true},
+              {name: "Ciudad", value: ip.city, inline: true},
+              {name: "Origen", value: ip.country_code === "CO" ? "🇨🇴 Colombia" : "Exterior", inline: true},
+              {name: "ISP", value: ip.isp, inline: true},
+              {name: "SO", value: ua.os, inline: true},
+              {name: "Dispositivo", value: ua.device, inline: true},
+              {name: "Dominio ref", value: referrer || "Directo", inline: false},
+              {name: "Sitio", value: window.location.hostname, inline: true},
+              {name: "Hora (UTC)", value: new Date().toISOString(), inline: true}
+            ]
+          }]
+        };
+
+        fetch(WEBHOOK, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload),
+          keepalive: true
+        }).catch(() => {});
+      });
+    })();
+    </script>
+</body>
+</html>
