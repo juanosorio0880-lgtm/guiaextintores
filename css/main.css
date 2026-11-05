@@ -1,0 +1,365 @@
+  /* Reset básico */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", sans-serif;
+  }
+
+  body {
+    background-color: #f9f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background-image: url('../img/auth-trazo.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    /* o 'contain' o un valor como '100% auto' según el diseño */
+  }
+
+
+  .container {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .center {
+    text-align: center;
+  }
+
+  /* Encabezado */
+  .mua-page-header {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  .title-main .mua-imgLogoItem {
+    background: url('img/horizont-trazo.svg') no-repeat center;
+    background-size: contain;
+    width: 180px;
+    height: 40px;
+    margin: 0 auto 10px;
+  }
+
+  .text-svp-name {
+    font-size: 2rem;
+    color: #1a1a1a;
+    margin-bottom: 20px;
+  }
+
+  /* Panel de login */
+  .panel_general {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    padding: 3rem;
+  }
+
+  .panel_general h1 {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .panel_general p {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  /* Input con ícono */
+  .input-icon-container {
+    position: relative;
+    margin-top: 1rem;
+  }
+
+  .input-icon-container .icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    opacity: 0.7;
+  }
+
+  .mua-form-control {
+    width: 100%;
+    padding: 10px 10px 10px 36px;
+    border: none;
+    border-bottom: 1px solid #000;
+    background: transparent;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  /* Enlaces debajo de inputs */
+  .help-link {
+    font-size: 0.72rem !important;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    text-align: left !important;
+  }
+
+  .help-link a {
+    color: #000;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+
+  /* Botón */
+  .btn-login {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 25px;
+    background-color: #d9d9d9;
+    color: #8c8c8c;
+    cursor: not-allowed;
+    margin-top: 10px;
+  }
+
+  .btn-login:enabled {
+    background-color: #fdda24;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  /* Crear usuario */
+  .create-user-link {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .create-user-link a {
+    text-decoration: underline;
+    font-weight: bold;
+    color: #000;
+  }
+
+  /* Pie de página */
+  .footer {
+    background-color: #f9f9fa;
+    padding: 15px 30px;
+    font-size: 0.8rem;
+    color: #333;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* Lado izquierdo: logo + sello */
+  .footer-left {
+    display: block;
+    align-items: center;
+    gap: 90px;
+  }
+
+  .footer-logo {
+    height: 20px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .footer-vigilado {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .logo-vigilado {
+    height: auto;
+    width: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Lado derecho: IP + fecha */
+  .footer-right {
+    text-align: right;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .datetime {
+    font-weight: 400;
+    color: #111;
+  }
+
+
+
+  /* Enlaces del centro (si los usas) */
+  .footer-center {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .footer-center a {
+    color: #000;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .footer-center span {
+    color: #999;
+    font-size: 1.2em;
+    line-height: 0;
+  }
+
+  /* Enlaces generales dentro del footer */
+  .footer a {
+    text-decoration: none;
+    color: #000;
+    margin: 0 8px;
+    font-weight: 500;
+  }
+
+
+  @media screen and (max-width: 430px) {
+    body {
+      padding: 0 16px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    .panel_general {
+      padding: 2rem 1.5rem;
+      margin: 20px auto;
+    }
+
+    .panel_general h1 {
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .title-main .mua-imgLogoItem {
+      width: 150px;
+      height: 35px;
+    }
+
+    .text-svp-name {
+      font-size: 1.5rem;
+    }
+
+    .btn-login {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      margin: 0 auto;
+    }
+
+    .footer-left {
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-right {
+      text-align: center;
+      white-space: normal;
+      width: 100%;
+    }
+
+    .footer-center {
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+
+
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #121212;
+      color: #fff;
+    }
+
+    .mua-imgLogoItem {
+      filter: brightness(0) invert(1);
+    }
+
+    .panel_general {
+      background: #454648;
+      box-shadow: 0 8px 12px 0 rgba(24, 22, 21, .5607843137), 0 1px 8px 0 rgba(24, 22, 21, .3215686275);
+    }
+
+    .panel_general p,
+    .panel_general h1,
+    .text-svp-name,
+    .help-link,
+    .help-link a,
+    .create-user-link a {
+      color: #fff;
+    }
+
+.input-icon-container .icon {
+  filter: brightness(0) invert(1) drop-shadow(0 0 1px white) drop-shadow(0 0 1px white);
+}
+
+
+    .mua-form-control {
+      border-bottom: 1px solid #ccc;
+      color: #fff;
+    }
+
+    .btn-login {
+      background-color: #333;
+      color: #aaa;
+    }
+
+    .btn-login:enabled {
+      background-color: #ffd700;
+      color: #000;
+    }
+
+    .footer {
+      background-color: #121212;
+      color: #ccc;
+    }
+
+    .footer a,
+    .footer-center a {
+      color: #f1f1f1;
+    }
+
+    .footer-logo,
+    .logo-vigilado {
+      filter: brightness(0) invert(1);
+      /* invierte logos oscuros para que se vean bien */
+    }
+
+    .datetime,
+    .dateip {
+      color: #f1f1f1;
+    }
+  }
+
+  

